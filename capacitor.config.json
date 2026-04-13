@@ -1,0 +1,13 @@
+{
+  "appId": "com.lifesync.app",
+  "appName": "LifeSync AI",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "Updater": {
+      "autoUpdate": true
+    }
+  }
+}
