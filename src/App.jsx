@@ -200,7 +200,7 @@ export default function App() {
           <div style={{ padding: '0.5rem', background: 'var(--accent-glow)', borderRadius: '0.5rem', color: 'var(--accent)' }}>
             <Sparkles size={20} />
           </div>
-          <h1 className="app-title" style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0, background: 'linear-gradient(to right, white, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', whiteSpace: 'nowrap' }}>LifeSync <span className="mobile-hide">AI v1.0.1 ☁️</span></h1>
+          <h1 className="app-title" style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0, background: 'linear-gradient(to right, white, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', whiteSpace: 'nowrap' }}>LifeSync <span className="mobile-hide">AI v1.0.2 ☁️</span></h1>
         </div>
 
         {/* Center: Navigation */}
