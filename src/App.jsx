@@ -65,10 +65,42 @@ export default function App() {
         window.electronAPI.onUpdateDownloaded(() => {
           setUpdateInfo({ state: 'ready', message: 'Cloud update ready. Restart app to finish setup.' });
         });
+        window.electronAPI.onUpdateNotAvailable(() => {
+          setUpdateInfo({ state: 'up-to-date', message: 'LifeSync AI is up to date.' });
+          setTimeout(() => setUpdateInfo({ state: 'idle', message: '' }), 3000);
+        });
+        window.electronAPI.onUpdateError((msg) => {
+          setUpdateInfo({ state: 'error', message: `Update Error: ${msg}` });
+          setTimeout(() => setUpdateInfo({ state: 'idle', message: '' }), 5000);
+        });
       }
     };
     initUpdates();
   }, []);
+
+  const handleManualCheckForUpdates = async () => {
+    setUpdateInfo({ state: 'checking', message: 'Checking cloud for updates...' });
+    
+    // Desktop Check
+    if (window.electronAPI) {
+      await window.electronAPI.checkForUpdates();
+    } 
+    
+    // Mobile Check
+    try {
+      const result = await CapacitorUpdater.sync();
+      if (result && result.version) {
+        setUpdateInfo({ state: 'available', message: `Update v${result.version} downloaded.` });
+      } else {
+        setUpdateInfo({ state: 'up-to-date', message: 'All mobile assets are current.' });
+        setTimeout(() => setUpdateInfo({ state: 'idle', message: '' }), 3000);
+      }
+    } catch (e) {
+      if (!window.electronAPI) {
+        setUpdateInfo({ state: 'error', message: 'Update check failed.' });
+      }
+    }
+  };
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -168,7 +200,7 @@ export default function App() {
           <div style={{ padding: '0.5rem', background: 'var(--accent-glow)', borderRadius: '0.5rem', color: 'var(--accent)' }}>
             <Sparkles size={20} />
           </div>
-          <h1 className="app-title" style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0, background: 'linear-gradient(to right, white, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', whiteSpace: 'nowrap' }}>LifeSync <span className="mobile-hide">AI</span></h1>
+          <h1 className="app-title" style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0, background: 'linear-gradient(to right, white, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', whiteSpace: 'nowrap' }}>LifeSync <span className="mobile-hide">AI v1.0.1 ☁️</span></h1>
         </div>
 
         {/* Center: Navigation */}
@@ -249,7 +281,13 @@ export default function App() {
         {activeTab === 'wardrobe' && <WardrobeManager settings={settings} />}
         {activeTab === 'insights' && <Insights settings={settings} />}
 
-        <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} onSave={refreshSettings} />
+        <SettingsModal 
+          isOpen={isSettingsOpen} 
+          onClose={() => setIsSettingsOpen(false)} 
+          onSave={refreshSettings}
+          updateInfo={updateInfo}
+          onCheckForUpdates={handleManualCheckForUpdates}
+        />
       </main>
     </div>
   );

@@ -1,7 +1,8 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { autoUpdater } from 'electron-updater';
+import pkg from 'electron-updater';
+const { autoUpdater } = pkg;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -37,6 +38,14 @@ function createWindow() {
   autoUpdater.on('update-downloaded', () => {
     win.webContents.send('update_downloaded');
   });
+
+  autoUpdater.on('update-not-available', () => {
+    win.webContents.send('update_not_available');
+  });
+
+  autoUpdater.on('error', (err) => {
+    win.webContents.send('update_error', err.message);
+  });
 }
 
 app.whenReady().then(() => {
@@ -63,4 +72,15 @@ app.on('window-all-closed', () => {
 // Handle update installation
 ipcMain.on('restart_app', () => {
   autoUpdater.quitAndInstall();
+});
+
+// Manual update check
+ipcMain.handle('check_for_updates', async () => {
+  if (!app.isPackaged) return { error: 'Update check only available in production.' };
+  try {
+    const result = await autoUpdater.checkForUpdates();
+    return result;
+  } catch (err) {
+    return { error: err.message };
+  }
 });

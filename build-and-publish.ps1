@@ -12,7 +12,8 @@ npm run build
 
 if ($Type -eq "electron" -or $Type -eq "all") {
     Write-Host "Building Desktop (Electron) Cloud Release..." -ForegroundColor Yellow
-    npm run build:electron
+    # Explicitly publish to GitHub Releases
+    npx electron-builder build --publish always
 }
 
 if ($Type -eq "mobile" -or $Type -eq "all") {

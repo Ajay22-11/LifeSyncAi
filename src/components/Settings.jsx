@@ -24,7 +24,7 @@ const accentPresets = [
   { name: 'Obsidian', color: '#475569', glow: 'rgba(71, 85, 105, 0.4)' }
 ];
 
-export default function Settings({ isOpen, onClose, onSave }) {
+export default function Settings({ isOpen, onClose, onSave, updateInfo, onCheckForUpdates }) {
   const [activeTab, setActiveTab] = useState('profile');
   const [settings, setLocalSettings] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -321,6 +321,41 @@ export default function Settings({ isOpen, onClose, onSave }) {
                                     </div>
                                     <button onClick={handleExport} className="btn-secondary" style={{ width: '100%', gap: '0.5rem' }}><Download size={16} /> Export Wardrobe JSON</button>
                                 </div>
+
+                                <div style={{ padding: '1.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.05)', marginBottom: '2rem' }}>
+                                    <h5 style={{ color: 'white', fontWeight: 700, marginBottom: '1rem', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        <RotateCcw size={16} style={{ color: 'var(--accent)' }} /> System Updates
+                                    </h5>
+                                    
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                            <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
+                                                {updateInfo?.message || 'Check for new features and style engine improvements.'}
+                                            </span>
+                                        </div>
+
+                                        {updateInfo?.state === 'ready' ? (
+                                            <button 
+                                                onClick={() => window.electronAPI.restartApp()}
+                                                className="btn-primary" 
+                                                style={{ width: '100%', gap: '0.5rem', background: 'linear-gradient(135deg, #10b981, #34d399)' }}
+                                            >
+                                                <Zap size={16} /> Install & Restart
+                                            </button>
+                                        ) : (
+                                            <button 
+                                                onClick={onCheckForUpdates} 
+                                                disabled={updateInfo?.state === 'checking' || updateInfo?.state === 'downloading'}
+                                                className="btn-secondary" 
+                                                style={{ width: '100%', gap: '0.5rem' }}
+                                            >
+                                                {updateInfo?.state === 'checking' ? 'Connecting to Cloud...' : 
+                                                 updateInfo?.state === 'downloading' ? 'Downloading...' : 
+                                                 <><RotateCcw size={16} /> Check for Updates</>}
+                                            </button>
+                                        )}
+                                    </div>
+                                 </div>
 
                                 <button 
                                     style={{ width: '100%', padding: '1.25rem', background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '1rem', display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer' }}

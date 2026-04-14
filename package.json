@@ -1,7 +1,7 @@
 {
   "name": "lifesync-ai",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "repository": {
     "type": "git",
@@ -39,6 +39,7 @@
     "@capgo/capacitor-updater": "^8.45.3",
     "@supabase/supabase-js": "^2.103.0",
     "clsx": "^2.1.1",
+    "electron-updater": "^6.8.3",
     "framer-motion": "^12.38.0",
     "localforage": "^1.10.0",
     "lucide-react": "^1.7.0",
